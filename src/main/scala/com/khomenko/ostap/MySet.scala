@@ -93,6 +93,6 @@ object MySet:
     foldRight(set, Empty:MySet[B])((x, z) => NonEmpty(f(x), z))
   }
 
-  def flatMap[A, B](set: MySet[A], f: A => MySet[B]) = {
-    foldRight(set, Empty:MySet[B])((x, z) => foldRight(f(x), z)(NonEmpty(_, _)))
+  def flatMap[A, B](set: MySet[A], f: A => MySet[B]): MySet[B] = {
+    foldRight(set, Empty: MySet[B])((x, z) => foldRight(f(x), z)(NonEmpty(_, _)))
   }
