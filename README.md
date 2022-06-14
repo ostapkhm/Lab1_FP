@@ -12,5 +12,6 @@ The task was to write Set class with such methods:
 Set was renamed to MySet 
 
 The additional task was to write map and flatMap, namely:
+
 1.map[A, B](set: MySet[A], f: A => B): MySet[B]<br />
 2.flatMap[A, B](set: MySet[A], f: A => MySet[B]): MySet[B]<br />
