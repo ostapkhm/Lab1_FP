@@ -96,4 +96,22 @@ class MySetTest extends ScalaCheckSuite {
       }
     }
   }
+
+  property("size of map(set, func) should be equal to the size map on scala set and this func") {
+    // generating random function
+    forAll {(func:Int => Boolean)=>
+      forAll { (set: MySet[Int]) =>
+        MySet.size(MySet.map(set, func)) == toScalaSet(set).map(func).size
+      }
+    }
+  }
+
+  property("size of flatMap(set, func) should be equal to the size flatMap on scala set and this func") {
+    val func = ((x:Int) => makeSet(x, x + 1, x, x + 2))
+    val set_func = ((x:Int) => Set(x, x + 1, x, x + 2))
+
+    forAll { (set: MySet[Int]) =>
+      MySet.size(MySet.flatMap(set, func)) == toScalaSet(set).flatMap(set_func).size
+    }
+  }
 }

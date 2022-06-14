@@ -90,9 +90,16 @@ object MySet:
   }
 
   def map[A, B](set: MySet[A], f: A => B): MySet[B] = {
-    foldRight(set, Empty:MySet[B])((x, z) => NonEmpty(f(x), z))
+    foldRight(set, Empty:MySet[B])((x, z) =>
+      if (!contains(z, f(x))) NonEmpty(f(x), z)
+      else z
+    )
   }
 
   def flatMap[A, B](set: MySet[A], f: A => MySet[B]): MySet[B] = {
-    foldRight(set, Empty: MySet[B])((x, z) => foldRight(f(x), z)(NonEmpty(_, _)))
+    foldRight(set, Empty:MySet[B])((x, z) => foldRight(f(x), z)
+    ((w, z) =>
+      if (!contains(z, w)) NonEmpty(w, z)
+      else z
+    ))
   }
