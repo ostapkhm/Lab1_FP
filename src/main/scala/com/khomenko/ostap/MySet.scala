@@ -65,11 +65,14 @@ object MySet:
     else set
   }
 
+  private def union[A, B](set1: MySet[A], set2: MySet[B], f: A => B): MySet[B] = {
+    foldRight(set1, set2)((x:A, z:MySet[B]) => if (contains(z, f(x))) z else NonEmpty(f(x), z))
+  }
+
   def union[A](set1: MySet[A], set2: MySet[A]): MySet[A] = {
     set2 match {
       case Empty => set1
-      case NonEmpty(a, rest) => foldRight(set1, set2)((x, z) =>
-        if (contains(z, x)) z else NonEmpty(x, z))
+      case NonEmpty(a, rest) => union(set1, set2, x => x)
     }
   }
 
@@ -77,7 +80,7 @@ object MySet:
     set2 match {
       case Empty => Empty
       case NonEmpty(a, rest) => foldRight(set1, Empty: MySet[A])((x, z) =>
-        if (contains(set2, x)) NonEmpty(x, z) else z)
+        if (!contains(set2, x)) z else NonEmpty(x, z))
     }
   }
 
@@ -88,18 +91,11 @@ object MySet:
         if (contains(set1, x)) z else NonEmpty(x, z))
     }
   }
-
+  
   def map[A, B](set: MySet[A], f: A => B): MySet[B] = {
-    foldRight(set, Empty:MySet[B])((x, z) =>
-      if (!contains(z, f(x))) NonEmpty(f(x), z)
-      else z
-    )
+    union(set, Empty:MySet[B], f)
   }
 
   def flatMap[A, B](set: MySet[A], f: A => MySet[B]): MySet[B] = {
-    foldRight(set, Empty:MySet[B])((x, z) => foldRight(f(x), z)
-    ((w, z) =>
-      if (!contains(z, w)) NonEmpty(w, z)
-      else z
-    ))
+    foldRight(set, Empty:MySet[B])((x, z) => union(f(x), z, x=>x))
   }
